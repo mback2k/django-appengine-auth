@@ -5,6 +5,10 @@ Remote Google App Engine OAuth backend for Django
 extension to [Django-Social-Auth](https://github.com/omab/django-social-auth)
 which adds a OAuth backend for Google App Engine based Google Accounts.
 
+This application makes use of the
+[Google App Engine OAuth Profile endpoint application](https://github.com/mback2k/appengine-oauth-profile)
+which is by default hosted at https://oauth-profile.appspot.com/
+
 Installation
 ------------
 You can install the latest version from GitHub manually:
@@ -43,7 +47,7 @@ Add some or all of the following settings to your `settings.py`:
     # Defaults to False which makes it use the user's email address
     GOOGLE_APPENGINE_OAUTH_USE_UNIQUE_USER_ID = True
 
-    # Setup Google OAuth cunsumer key and secret
+    # Setup Google OAuth consumer key and secret
     GOOGLE_APPENGINE_CONSUMER_KEY = ''
     GOOGLE_APPENGINE_CONSUMER_SECRET = ''
 
