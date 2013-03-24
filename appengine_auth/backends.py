@@ -3,7 +3,6 @@ from urllib2 import Request, urlopen
 from django.utils import simplejson
 
 from social_auth.utils import setting
-from social_auth.backends import USERNAME
 from social_auth.backends.google import GoogleOAuthBackend, GoogleOAuth, validate_whitelists
 
 
@@ -31,7 +30,7 @@ class GoogleAppEngineOAuthBackend(GoogleOAuthBackend):
     def get_user_details(self, response):
         """Return the information retrieved from the API endpoint"""
         email = response['email']
-        return {USERNAME: response.get('nickname', email).split('@', 1)[0],
+        return {'username': response.get('nickname', email).split('@', 1)[0],
                 'email': email,
                 'fullname': '',
                 'first_name': '',
