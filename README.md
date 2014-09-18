@@ -9,17 +9,20 @@ This application makes use of the
 [Google App Engine OAuth Profile endpoint application](https://github.com/mback2k/appengine-oauth-profile)
 which is by default hosted at https://oauth-profile.appspot.com/
 
+Dependencies
+------------
+- isodate            [http://pypi.python.org/pypi/isodate/]
+- Beautiful Soup 4   [http://www.crummy.com/software/BeautifulSoup/]
+
 Installation
 ------------
-You can install the latest version from GitHub manually:
+Install the latest version from pypi.python.org:
 
-    git clone https://github.com/mback2k/django-appengine-auth.git
-    cd django-appengine-auth
-    python setup.py install
+    pip install django-appengine-auth
 
-or via pip:
+Install the development version by cloning the source from github.com:
 
-    pip install https://github.com/mback2k/django-appengine-auth/zipball/master
+    pip install git+https://github.com/mback2k/django-appengine-auth.git
 
 Configuration
 -------------
@@ -57,4 +60,4 @@ documentation for additional information.
 License
 -------
 * Released under MIT License
-* Copyright (c) 2012 Marc Hoersken <info@marc-hoersken.de>
+* Copyright (c) 2012-2014 Marc Hoersken <info@marc-hoersken.de>
