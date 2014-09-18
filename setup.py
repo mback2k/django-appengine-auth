@@ -19,8 +19,8 @@ setup(
     include_package_data=True,
     url='https://github.com/mback2k/django-appengine-auth',
     license='MIT',
-    description=u' '.join(__import__('appengine_auth').__doc__.splitlines()).strip(),
-    install_requires=['django-social-auth>=0.3.3', 'oauth2>=1.5.211'],
+    description=' '.join(__import__('appengine_auth').__doc__.splitlines()).strip(),
+    install_requires=['django-social-auth>=0.7.28', 'oauth2>=1.5.211'],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Intended Audience :: Developers',
