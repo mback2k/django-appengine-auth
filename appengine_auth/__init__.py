@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 django-appengine-auth is an extension to django-social-auth with a backend for the Google App Engine OAuth endpoint
 """
@@ -5,7 +6,7 @@ django-appengine-auth is an extension to django-social-auth with a backend for t
 __version_info__ = {
     'major': 0,
     'minor': 1,
-    'micro': 1,
+    'micro': 2,
     'releaselevel': 'dev',
 }
 

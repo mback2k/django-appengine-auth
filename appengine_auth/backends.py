@@ -1,6 +1,10 @@
+# -*- coding: utf-8 -*-
 from urllib2 import Request, urlopen
 
-from django.utils import simplejson
+try:
+    from django.utils import simplejson as json
+except ImportError:
+    import json
 
 from social_auth.utils import setting
 from social_auth.backends.google import GoogleOAuthBackend, GoogleOAuth, validate_whitelists
@@ -79,7 +83,7 @@ def google_appengine_userinfo(url, params):
     """
     request = Request(url + '?' + params, headers={'Authorization': params})
     try:
-        return simplejson.loads(urlopen(request).read())
+        return json.loads(urlopen(request).read())
     except (ValueError, KeyError, IOError):
         return None
 
