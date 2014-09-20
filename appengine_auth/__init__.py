@@ -6,7 +6,7 @@ django-appengine-auth is an extension to django-social-auth with a backend for t
 __version_info__ = {
     'major': 0,
     'minor': 1,
-    'micro': 2,
+    'micro': 3,
     'releaselevel': 'dev',
 }
 
