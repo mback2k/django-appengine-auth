@@ -11,8 +11,8 @@ which is by default hosted at https://oauth-profile.appspot.com/
 
 Dependencies
 ------------
-- isodate            [http://pypi.python.org/pypi/isodate/]
-- Beautiful Soup 4   [http://www.crummy.com/software/BeautifulSoup/]
+- django-social-auth [https://github.com/omab/django-social-auth]
+- oauth2             [https://github.com/simplegeo/python-oauth2]
 
 Installation
 ------------
