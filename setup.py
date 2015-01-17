@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from setuptools import setup, find_packages
 import os
 
@@ -20,7 +21,7 @@ setup(
     url='https://github.com/mback2k/django-appengine-auth',
     license='MIT',
     description=' '.join(__import__('appengine_auth').__doc__.splitlines()).strip(),
-    install_requires=['django-social-auth>=0.7.28', 'oauth2>=1.5.211'],
+    install_requires=['django-social-auth==0.7.28', 'oauth2>=1.5.211'],
     classifiers=[
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
         'Intended Audience :: Developers',
