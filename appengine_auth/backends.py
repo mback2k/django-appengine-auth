@@ -7,7 +7,8 @@ except ImportError:
     import json
 
 from social_auth.utils import setting
-from social_auth.backends.google import GoogleOAuthBackend, GoogleOAuth, validate_whitelists
+from social_auth.backends.google import GoogleOAuth, GoogleOAuth2
+from social_auth.backends.google import GoogleOAuthBackend, GoogleOAuth2Backend
 
 
 # Google OAuth base configuration
@@ -16,11 +17,23 @@ AUTHORIZATION_URL = 'https://%s/_ah/OAuthAuthorizeToken' % GOOGLE_OAUTH_SERVER
 REQUEST_TOKEN_URL = 'https://%s/_ah/OAuthGetRequestToken' % GOOGLE_OAUTH_SERVER
 ACCESS_TOKEN_URL = 'https://%s/_ah/OAuthGetAccessToken' % GOOGLE_OAUTH_SERVER
 
-GOOGLE_APPENGINE_PROFILE = 'https://%s/oauth/v1/userinfo' % GOOGLE_OAUTH_SERVER
+GOOGLE_APPENGINE_PROFILE_V1 = 'https://%s/oauth/v1/userinfo' % GOOGLE_OAUTH_SERVER
+GOOGLE_APPENGINE_PROFILE_V2 = 'https://%s/oauth/v2/userinfo' % GOOGLE_OAUTH_SERVER
 
 
 # Backends
-class GoogleAppEngineOAuthBackend(GoogleOAuthBackend):
+class BaseAppEngineAuthProfile(object):
+    def get_user_details(self, response):
+        """Return the information retrieved from the API endpoint"""
+        email = response['email']
+        return {'username': response.get('nickname', email).split('@', 1)[0],
+                'email': email,
+                'fullname': '',
+                'first_name': '',
+                'last_name': ''}
+
+
+class GoogleAppEngineOAuthBackend(BaseAppEngineAuthProfile, GoogleOAuthBackend):
     """Google App Engine OAuth authentication backend"""
     name = 'google-appengine-oauth'
 
@@ -31,14 +44,17 @@ class GoogleAppEngineOAuthBackend(GoogleOAuthBackend):
             return response['id']
         return user_id
 
-    def get_user_details(self, response):
-        """Return the information retrieved from the API endpoint"""
-        email = response['email']
-        return {'username': response.get('nickname', email).split('@', 1)[0],
-                'email': email,
-                'fullname': '',
-                'first_name': '',
-                'last_name': ''}
+
+class GoogleAppEngineOAuth2Backend(BaseAppEngineAuthProfile, GoogleOAuth2Backend):
+    """Google App Engine OAuth2 authentication backend"""
+    name = 'google-appengine-oauth2'
+
+    def get_user_id(self, details, response):
+        """Use google email or appengine user_id as unique id"""
+        user_id = super(GoogleAppEngineOAuth2Backend, self).get_user_id(details, response)
+        if setting('GOOGLE_APPENGINE_OAUTH_USE_UNIQUE_USER_ID', False):
+            return response['id']
+        return user_id
 
 
 # Auth classes
@@ -54,9 +70,9 @@ class GoogleAppEngineOAuth(GoogleOAuth):
 
     def user_data(self, access_token, *args, **kwargs):
         """Return user data from Google API"""
-        request = self.oauth_request(access_token, GOOGLE_APPENGINE_PROFILE)
+        request = self.oauth_request(access_token, GOOGLE_APPENGINE_PROFILE_V1)
         url, params = request.to_url().split('?', 1)
-        return google_appengine_userinfo(url, params)
+        return google_appengine_userinfo_v1(url, params)
 
     def oauth_request(self, token, url, extra_params=None):
         """Add OAuth parameters to the request"""
@@ -73,7 +89,18 @@ class GoogleAppEngineOAuth(GoogleOAuth):
         return key_and_secret
 
 
-def google_appengine_userinfo(url, params):
+class GoogleAppEngineOAuth2(GoogleOAuth2):
+    """Google App Engine OAuth2 authentication backend"""
+    AUTH_BACKEND = GoogleAppEngineOAuth2Backend
+    SETTINGS_KEY_NAME = 'GOOGLE_APPENGINE_CLIENT_ID'
+    SETTINGS_SECRET_NAME = 'GOOGLE_APPENGINE_CLIENT_SECRET'
+
+    def user_data(self, access_token, *args, **kwargs):
+        """Return user data from Google API"""
+        return google_appengine_userinfo_v2(GOOGLE_APPENGINE_PROFILE_V2, access_token)
+
+
+def google_appengine_userinfo_v1(url, params):
     """Loads user data from OAuth Profile Google App Engine App.
 
     Parameters must be passed in queryset and Authorization header as described
@@ -88,7 +115,20 @@ def google_appengine_userinfo(url, params):
         return None
 
 
+def google_appengine_userinfo_v2(url, access_token):
+    """Loads user data from OAuth Profile Google App Engine App.
+
+    The access_token parameter is passed as a Bearer authorization.
+    """
+    request = Request(url, headers={'Authorization': 'Bearer ' + access_token})
+    try:
+        return json.loads(urlopen(request).read())
+    except (ValueError, KeyError, IOError):
+        return None
+
+
 # Backend definition
 BACKENDS = {
     'google-appengine-oauth': GoogleAppEngineOAuth,
+    'google-appengine-oauth2': GoogleAppEngineOAuth2,
 }
