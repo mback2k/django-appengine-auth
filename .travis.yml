@@ -7,4 +7,5 @@ python:
 # command to install dependencies
 install:
   - "pip install -r requirements.txt"
-  - "pip install ."
+# command to install package
+script: "pip install ."
